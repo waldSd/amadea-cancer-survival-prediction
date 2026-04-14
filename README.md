@@ -86,3 +86,97 @@ Le modèle atteint une précision de 100% sur les données de test. Ces résulta
 ---
 
 ### Fichiers
+
+
+---
+
+---
+
+# 🧬 AMADEA — Breast Cancer Survival Prediction with ML on Genomic Data
+
+> Academic project completed as part of the AI & Data Science Engineering degree — CNAM BDIA P4 (2023)
+
+---
+
+## 🇬🇧 English Version
+
+### Context
+
+Breast cancer is one of the most studied cancers worldwide. Predicting patient survival from genomic profiles is a core challenge in precision medicine: with tens of thousands of potentially relevant genes, identifying those with genuine predictive power over survival is a high-dimensional feature selection problem.
+
+This project aimed to build a complete ML pipeline to predict the vital status of breast cancer patients from genomic data, in two steps: selecting the most informative genes via iterative ROC optimization, then training a neural network on the selected features.
+
+---
+
+### Data
+
+| Property | Value |
+|----------|-------|
+| Number of patients | 379 |
+| Number of genes (features) | 17,284 |
+| Target variable | `vital_status` (survived/deceased) |
+| Problem type | Binary classification |
+
+The dataset presented a classic bioinformatics challenge: the number of features (17,284 genes) vastly exceeded the number of observations (379 patients), making feature selection a critical prerequisite to any modeling step.
+
+---
+
+### Methodology
+
+#### Step 1 — Feature Selection via ROC Optimization (AMADEA)
+
+With 17,284 candidate genes, exhaustive selection was computationally infeasible. We used the **AMADEA** platform to implement an iterative selection process:
+
+1. **Data symbolization**: continuous values converted to symbolic classes by comparison to column medians and percentiles
+2. **Random sampling**: random sampling of gene clusters (up to 1% of total features per draw, ~172 genes)
+3. **ROC computation**: evaluating the explanatory quality of each combination via the real ROC / ideal ROC ratio
+4. **Iteration**: 1,500 repetitions to explore the space of possible combinations
+5. **Selection**: retaining the gene combination with the highest ROC score
+
+**Result:** 173 genes selected out of 17,284, with a ROC score of 1.0 on the training set.
+
+#### Step 2 — Neural Network (JNETTE)
+
+A fully-connected neural network was trained on the 173 selected genes:
+
+| Layer | Neurons | Activation |
+|-------|---------|------------|
+| Input | 173 | — |
+Layer 1 | 200 | Sigmoid |
+| Layer 2 | 250 | ReLU |
+| Layer 3 | 300 | Tanh |
+| Output | 1 | Binary |
+
+- **Training method:** Resilient Backpropagation
+- **Iterations:** 100
+- **Result:** 100% accuracy on test set, perfect confusion matrix
+
+---
+
+### Results & Critical Analysis
+
+The model achieved 100% accuracy on test data. While impressive, these results must be interpreted carefully:
+
+**Identified limitations:**
+- The feature-to-observation ratio (17,284 genes for 379 patients) is extremely unfavorable and is a classic setup for overfitting
+- The absence of strict cross-validation and an independent holdout test set limits the generalizability of the findings
+- Perfect accuracy on medical data is rarely achievable in real-world conditions and should systematically raise concerns about potential data leakage or overfitting
+
+**What this project demonstrates:**
+- Ability to work with high-dimensional biomedical data
+- Proficiency in medical classification evaluation metrics (ROC curve, confusion matrix)
+- Critical thinking on model results: proactive identification of potential biases
+- Understanding of feature selection challenges in bioinformatics
+
+---
+
+### Technical Stack
+
+- **AMADEA** — Operational research platform for feature selection
+- **JNETTE** — Neural network construction and training environment
+- **ROC Analysis** — Variable explanatory power evaluation
+- **Fully-connected neural networks** — Binary classification
+
+---
+
+### Files
